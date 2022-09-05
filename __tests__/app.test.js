@@ -32,7 +32,7 @@ describe("GET api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200: returns an object with the specified article information as properties", () => {
     const article_id = 2;
     return request(app)
