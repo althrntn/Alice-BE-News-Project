@@ -77,3 +77,20 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe.only("GET /api/users", () => {
+  test("200: returns an array of user objects, each with username, name and avatar_url properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        const users = res.body;
+        expect(Array.isArray(users)).toBe(true);
+        users.forEach((user) => {
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
+      });
+  });
+});
