@@ -1,19 +1,24 @@
 const express = require("express");
-const { getArticleById } = require("./controllers/article-controllers");
+const {
+  getArticleById,
+  patchArticleVotes,
+} = require("./controllers/article-controllers");
 const { getTopics } = require("./controllers/topic-controller");
 const { getUsers } = require("./controllers/user-controllers");
 
 const app = express();
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
+app.patch("/api/articles/:article_id", patchArticleVotes);
 app.get("*", function (req, res) {
   res.status(404).send({ msg: "path not found" });
 });
 
 app.use((err, req, res, next) => {
-  const badReqCodes = ["22P02"];
+  const badReqCodes = ["22P02", "23502"];
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "bad request" });
   } else {
