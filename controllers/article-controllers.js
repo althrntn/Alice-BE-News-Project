@@ -18,11 +18,13 @@ exports.patchArticleVotes = (req, res, next) => {
     .then((result) => {
       const currentVotes = result.votes;
       voteUpdate += currentVotes;
-      const comment_count = result.comment_count;
-      return updateArticleVotes(article_id, voteUpdate, comment_count);
+      return updateArticleVotes(article_id, voteUpdate);
     })
-    .then((updatedArticle) => {
-      res.status(200).send({ article: updatedArticle });
+    .then((result) => {
+      return fetchArticleById(article_id);
+    })
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };
