@@ -13,8 +13,15 @@ exports.getArticleById = (req, res, next) => {
 };
 exports.patchArticleVotes = (req, res, next) => {
   const article_id = req.params.article_id;
-  const voteUpdate = req.body.inc_votes;
-  updateArticleVotes(article_id, voteUpdate).then((updatedArticle) => {
-    res.status(200).send({ article: updatedArticle });
-  });
+  let voteUpdate = req.body.inc_votes;
+  fetchArticleById(article_id)
+    .then((result) => {
+      const currentVotes = result.votes;
+      voteUpdate += currentVotes;
+      return updateArticleVotes(article_id, voteUpdate);
+    })
+    .then((updatedArticle) => {
+      res.status(200).send({ article: updatedArticle });
+    })
+    .catch(next);
 };
