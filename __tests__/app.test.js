@@ -26,7 +26,7 @@ describe("GET api/topics", () => {
         });
       });
   });
-  test("404: returns a not found error if an incorrect path is enterred", () => {
+  test("404: returns a not found error if an incorrect path is entered", () => {
     return request(app)
       .get("/api/tpics")
       .expect(404)
@@ -74,6 +74,25 @@ describe("GET /api/articles/:article_id", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: returns an array of user objects, each with username, name and avatar_url properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toHaveProperty("users");
+        const users = res.body.users;
+        expect(users.length).toBe(4);
+        expect(Array.isArray(users)).toBe(true);
+        users.forEach((user) => {
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
       });
   });
 });
