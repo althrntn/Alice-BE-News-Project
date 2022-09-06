@@ -154,4 +154,24 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(body.msg).toBe("bad request");
       });
   });
+  test("400; returns a bad request message when aticle searched for with an invalid article_id e.g. string", () => {
+    const newVote = 5;
+    return request(app)
+      .patch("/api/articles/blah")
+      .send({ inc_votes: newVote })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("404: returns a not found message when passed an article_id that is out of range of the database", () => {
+    const newVote = 5;
+    return request(app)
+      .get(`/api/articles/100000`)
+      .send({ inc_votes: newVote })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("article not found");
+      });
+  });
 });
