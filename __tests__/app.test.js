@@ -78,7 +78,7 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200: returns an array of user objects, each with username, name and avatar_url properties", () => {
     return request(app)
       .get("/api/users")
@@ -91,6 +91,14 @@ describe.only("GET /api/users", () => {
           expect(user).toHaveProperty("username", expect.any(String));
           expect(user).toHaveProperty("avatar_url", expect.any(String));
         });
+      });
+  });
+  test("404: returns a not found message when incorrect path enterred", () => {
+    return request(app)
+      .get("/api/usr")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("path not found");
       });
   });
 });
