@@ -182,3 +182,26 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+describe("GET /api/articles", () => {
+  test("200: returns and articles object with an array of articles with correct keys", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("articles");
+        const articles = body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
+          expect(parseInt(article.comment_count) >= 0).toBe(true);
+          expect(parseInt(article.created_at) > 0).toBe(true);
+        });
+      });
+  });
+});

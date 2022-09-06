@@ -26,3 +26,16 @@ exports.updateArticleVotes = (article_id, voteUpdate) => {
       return article;
     });
 };
+exports.fetchAllArticles = () => {
+  return db
+    .query(
+      "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id;"
+    )
+    .then((results) => {
+      const noBodyResults = results.rows.map((result) => {
+        delete result.body;
+        return result;
+      });
+      return noBodyResults;
+    });
+};
