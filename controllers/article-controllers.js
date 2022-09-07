@@ -2,6 +2,7 @@ const {
   fetchArticleById,
   updateArticleVotes,
   fetchAllArticles,
+  fetchCommentsForArticle,
 } = require("../models/article-models");
 const { fetchTopics } = require("../models/topic-models");
 
@@ -55,4 +56,20 @@ exports.getArticles = (req, res, next) => {
       })
       .catch(next);
   }
+};
+
+exports.getCommentsForArticle = (req, res, next) => {
+  const article_id = req.params.article_id;
+  fetchArticleById(article_id)
+    .then((results) => {
+      if (parseInt(results.comment_count) >= 1) {
+        return fetchCommentsForArticle(article_id);
+      } else {
+        res.status(200).send({ comments: [] });
+      }
+    })
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };
