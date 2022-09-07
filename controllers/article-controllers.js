@@ -30,7 +30,10 @@ exports.patchArticleVotes = (req, res, next) => {
     .catch(next);
 };
 exports.getArticles = (req, res, next) => {
-  fetchAllArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+  const topic = req.query.topic;
+  fetchAllArticles(topic)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };

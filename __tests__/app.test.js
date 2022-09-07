@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const { convertTimestampToDate } = require("../db/seeds/utils");
+const sorted = require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -183,7 +184,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 describe("GET /api/articles", () => {
-  test("200: returns and articles object with an array of articles with correct keys", () => {
+  test("200: returns an articles object with an array of articles with correct keys", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -202,6 +203,32 @@ describe("GET /api/articles", () => {
           expect(parseInt(article.comment_count) >= 0).toBe(true);
           expect(parseInt(article.created_at) > 0).toBe(true);
         });
+      });
+  });
+  test("200: returns article results sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: takes an optional topic query which returns article results only for that topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(1);
+        expect(articles[0].topic).toBe("cats");
+      });
+  });
+  test("404: returns a not found message when user queries a non-existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=gah")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("topic not found");
       });
   });
 });
