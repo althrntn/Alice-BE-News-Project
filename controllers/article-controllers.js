@@ -3,6 +3,7 @@ const {
   updateArticleVotes,
   fetchAllArticles,
 } = require("../models/article-models");
+const { fetchTopics } = require("../models/topic-models");
 
 exports.getArticleById = (req, res, next) => {
   const article_id = req.params.article_id;
@@ -31,9 +32,27 @@ exports.patchArticleVotes = (req, res, next) => {
 };
 exports.getArticles = (req, res, next) => {
   const topic = req.query.topic;
-  fetchAllArticles(topic)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  if (topic) {
+    fetchTopics()
+      .then((results) => {
+        const topicCheck = results.filter((topicFound) => {
+          return topicFound.slug === topic;
+        });
+        if (topicCheck.length > 0) {
+          return fetchAllArticles(topic);
+        } else {
+          return Promise.reject({ status: 404, msg: "topic not found" });
+        }
+      })
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  } else {
+    fetchAllArticles()
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  }
 };

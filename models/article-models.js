@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { fetchTopics } = require("./topic-models");
 
 exports.fetchArticleById = (article_id) => {
   return db
@@ -35,9 +36,6 @@ exports.fetchAllArticles = (topic) => {
   queryString += "GROUP BY articles.article_id ORDER BY created_at DESC;";
 
   return db.query(queryString).then((results) => {
-    if (results.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "topic not found" });
-    }
     const noBodyResults = results.rows.map((result) => {
       delete result.body;
       return result;

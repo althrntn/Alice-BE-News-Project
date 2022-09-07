@@ -189,7 +189,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveProperty("articles");
         const articles = body.articles;
         expect(Array.isArray(articles)).toBe(true);
         articles.forEach((article) => {
@@ -229,6 +228,14 @@ describe("GET /api/articles", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("topic not found");
+      });
+  });
+  test("200: returns an empty array when passed a topic that exists but has no articles associated with it", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
       });
   });
 });
