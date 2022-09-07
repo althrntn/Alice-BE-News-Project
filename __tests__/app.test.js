@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const { convertTimestampToDate } = require("../db/seeds/utils");
+const sorted = require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -179,6 +180,62 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("article not found");
+      });
+  });
+});
+describe("GET /api/articles", () => {
+  test("200: returns an articles object with an array of articles with correct keys", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
+          expect(parseInt(article.comment_count) >= 0).toBe(true);
+          expect(parseInt(article.created_at) > 0).toBe(true);
+        });
+      });
+  });
+  test("200: returns article results sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: takes an optional topic query which returns article results only for that topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(1);
+        expect(articles[0].topic).toBe("cats");
+      });
+  });
+  test("404: returns a not found message when user queries a non-existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=gah")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("topic not found");
+      });
+  });
+  test("200: returns an empty array when passed a topic that exists but has no articles associated with it", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
       });
   });
 });

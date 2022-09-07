@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { fetchTopics } = require("./topic-models");
 
 exports.fetchArticleById = (article_id) => {
   return db
@@ -25,4 +26,20 @@ exports.updateArticleVotes = (article_id, voteUpdate) => {
       const article = results.rows[0];
       return article;
     });
+};
+exports.fetchAllArticles = (topic) => {
+  let queryString =
+    "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id ";
+  if (topic) {
+    queryString += `WHERE topic = '${topic}'`;
+  }
+  queryString += "GROUP BY articles.article_id ORDER BY created_at DESC;";
+
+  return db.query(queryString).then((results) => {
+    const noBodyResults = results.rows.map((result) => {
+      delete result.body;
+      return result;
+    });
+    return noBodyResults;
+  });
 };
