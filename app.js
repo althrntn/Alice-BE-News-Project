@@ -4,6 +4,7 @@ const {
   patchArticleVotes,
   getArticles,
   getCommentsForArticle,
+  PostNewComment,
 } = require("./controllers/article-controllers");
 const { getTopics } = require("./controllers/topic-controller");
 const { getUsers } = require("./controllers/user-controllers");
@@ -17,6 +18,7 @@ app.get("/api/users", getUsers);
 app.patch("/api/articles/:article_id", patchArticleVotes);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsForArticle);
+app.post("/api/articles/:article_id/comments", PostNewComment);
 app.get("*", function (req, res) {
   res.status(404).send({ msg: "path not found" });
 });
@@ -25,6 +27,17 @@ app.use((err, req, res, next) => {
   const badReqCodes = ["22P02", "23502"];
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "bad request" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  const notFoundCodes = ["23503"];
+  if (notFoundCodes.includes(err.code)) {
+    const errArray = err.detail.split(" ");
+    const key = errArray[errArray.length - 1].slice(1, -3);
+    res.status(404).send({ msg: `${key} not found` });
   } else {
     next(err);
   }
