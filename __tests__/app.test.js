@@ -364,4 +364,17 @@ describe("POST/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("article not found");
       });
   });
+  test("404: returns a user not found message when passed a non-existent username", () => {
+    const newComment = {
+      username: "bob",
+      body: "hiya",
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("user not found");
+      });
+  });
 });

@@ -35,7 +35,9 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   const notFoundCodes = ["23503"];
   if (notFoundCodes.includes(err.code)) {
-    res.status(404).send({ msg: "article not found" });
+    const errArray = err.detail.split(" ");
+    const key = errArray[errArray.length - 1].slice(1, -3);
+    res.status(404).send({ msg: `${key} not found` });
   } else {
     next(err);
   }
