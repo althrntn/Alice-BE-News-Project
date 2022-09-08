@@ -5,6 +5,7 @@ const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const { convertTimestampToDate } = require("../db/seeds/utils");
 const sorted = require("jest-sorted");
+const { getArticleById } = require("../controllers/article-controllers");
 
 beforeEach(() => {
   return seed(testData);
@@ -410,5 +411,27 @@ describe("POST/api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("user not found");
       });
+  });
+});
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes the specified comment from the data and does not return any content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((results) => {
+        expect(results.text).toBe("");
+      });
+  });
+  test("404: invalid comment_id returns not found message", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => expect(body.msg).toBe("comment not found"));
+  });
+  test("400: bad request message sent for invalid comment_id e.g. string", () => {
+    return request(app)
+      .delete("/api/comments/blah")
+      .expect(400)
+      .then(({ body }) => expect(body.msg).toBe("bad request"));
   });
 });
