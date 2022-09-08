@@ -33,7 +33,8 @@ exports.patchArticleVotes = (req, res, next) => {
     .catch(next);
 };
 exports.getArticles = (req, res, next) => {
-  const topic = req.query.topic;
+  const { topic, sort_by, order } = req.query;
+  console.log(order);
   if (topic) {
     fetchTopics()
       .then((results) => {
@@ -41,7 +42,7 @@ exports.getArticles = (req, res, next) => {
           return topicFound.slug === topic;
         });
         if (topicCheck.length > 0) {
-          return fetchAllArticles(topic);
+          return fetchAllArticles(sort_by, order, topic);
         } else {
           return Promise.reject({ status: 404, msg: "topic not found" });
         }
@@ -51,7 +52,7 @@ exports.getArticles = (req, res, next) => {
       })
       .catch(next);
   } else {
-    fetchAllArticles()
+    fetchAllArticles(sort_by, order)
       .then((articles) => {
         res.status(200).send({ articles });
       })

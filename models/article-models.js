@@ -27,13 +27,14 @@ exports.updateArticleVotes = (article_id, voteUpdate) => {
       return article;
     });
 };
-exports.fetchAllArticles = (topic) => {
+exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
   let queryString =
     "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id ";
   if (topic) {
     queryString += `WHERE topic = '${topic}'`;
   }
-  queryString += "GROUP BY articles.article_id ORDER BY created_at DESC;";
+
+  queryString += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
 
   return db.query(queryString).then((results) => {
     const noBodyResults = results.rows.map((result) => {

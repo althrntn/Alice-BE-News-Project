@@ -204,7 +204,7 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("200: returns article results sorted by date in descending order", () => {
+  test("200: defaults to returning article results sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -222,6 +222,24 @@ describe("GET /api/articles", () => {
         expect(articles[0].topic).toBe("cats");
       });
   });
+  test("200: takes an optional sort_by query that allows the user to sort results by a particular column, defaulting to descending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("title", { descending: true });
+      });
+  });
+  test("200: takes an optional order query allowng the user to set the sort_by order to ascending or descending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("title");
+      });
+  });
   test("404: returns a not found message when user queries a non-existent topic", () => {
     return request(app)
       .get("/api/articles?topic=gah")
@@ -236,6 +254,22 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toEqual([]);
+      });
+  });
+  test("400: returns a bad request message when user queries a non-existent column name", () => {
+    return request(app)
+      .get("/api/articles?sort_by=gah")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: returns a bad request message when user requests an invalid order", () => {
+    return request(app)
+      .get("/api/articles?order=blah")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
       });
   });
 });
