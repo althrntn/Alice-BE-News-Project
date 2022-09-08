@@ -43,3 +43,13 @@ exports.fetchAllArticles = (topic) => {
     return noBodyResults;
   });
 };
+exports.fetchCommentsForArticle = (article_id) => {
+  return db
+    .query(
+      "SELECT author, votes, created_at, comment_id, body FROM comments WHERE article_id = $1;",
+      [article_id]
+    )
+    .then((results) => {
+      return results.rows;
+    });
+};

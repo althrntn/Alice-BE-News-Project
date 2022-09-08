@@ -3,6 +3,7 @@ const {
   getArticleById,
   patchArticleVotes,
   getArticles,
+  getCommentsForArticle,
 } = require("./controllers/article-controllers");
 const { getTopics } = require("./controllers/topic-controller");
 const { getUsers } = require("./controllers/user-controllers");
@@ -15,6 +16,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
 app.patch("/api/articles/:article_id", patchArticleVotes);
 app.get("/api/articles", getArticles);
+app.get("/api/articles/:article_id/comments", getCommentsForArticle);
 app.get("*", function (req, res) {
   res.status(404).send({ msg: "path not found" });
 });
