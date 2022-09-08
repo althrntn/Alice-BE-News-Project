@@ -282,3 +282,86 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("POST/api/articles/:article_id/comments", () => {
+  test("201: returns the created comment when passed a valid comment object", () => {
+    const newComment = {
+      username: "rogersop",
+      body: "worlds most pointless comment",
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(typeof body.comment).toBe("object");
+        expect(body.comment).toHaveProperty(
+          "body",
+          "worlds most pointless comment"
+        );
+        expect(body.comment).toHaveProperty("author", "rogersop");
+        expect(body.comment).toHaveProperty("votes", 0);
+        expect(body.comment).toHaveProperty("article_id", 9);
+        expect(body.comment).toHaveProperty("created_at");
+        expect(body.comment).toHaveProperty("comment_id", 19);
+      });
+  });
+  test("400: returns bad request when passed a blank object", () => {
+    const newComment = {};
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: returns bad request when passed an object with missing keys", () => {
+    const newComment = { username: "rogersop" };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: returns bad request when passed an object with invalid keys e.g. null values", () => {
+    const newComment = {
+      username: "rogersop",
+      body: null,
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: returns bad request when passed an invalid article_id e.g. string", () => {
+    const newComment = {
+      username: "rogersop",
+      body: "hiya",
+    };
+    return request(app)
+      .post("/api/articles/blah/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("404: returns an article not found message when passed an out of range article_id", () => {
+    const newComment = {
+      username: "rogersop",
+      body: "hiya",
+    };
+    return request(app)
+      .post("/api/articles/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article not found");
+      });
+  });
+});

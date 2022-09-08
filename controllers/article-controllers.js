@@ -3,6 +3,7 @@ const {
   updateArticleVotes,
   fetchAllArticles,
   fetchCommentsForArticle,
+  createNewComment,
 } = require("../models/article-models");
 const { fetchTopics } = require("../models/topic-models");
 
@@ -70,6 +71,15 @@ exports.getCommentsForArticle = (req, res, next) => {
     })
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+exports.PostNewComment = (req, res, next) => {
+  const article_id = req.params.article_id;
+  const newComment = req.body;
+  createNewComment(article_id, newComment)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
