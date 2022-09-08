@@ -44,17 +44,12 @@ exports.fetchAllArticles = (topic) => {
   });
 };
 exports.fetchCommentsForArticle = (article_id) => {
-  const letterRegex = /[\D]/;
-  if (article_id.match(letterRegex)) {
-    return Promise.reject({ status: 400, msg: "bad request" });
-  } else {
-    return db
-      .query(
-        "SELECT author, votes, created_at, comment_id, body FROM comments WHERE article_id = $1;",
-        [article_id]
-      )
-      .then((results) => {
-        return results.rows;
-      });
-  }
+  return db
+    .query(
+      "SELECT author, votes, created_at, comment_id, body FROM comments WHERE article_id = $1;",
+      [article_id]
+    )
+    .then((results) => {
+      return results.rows;
+    });
 };
