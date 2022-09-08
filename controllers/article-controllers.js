@@ -34,7 +34,6 @@ exports.patchArticleVotes = (req, res, next) => {
 };
 exports.getArticles = (req, res, next) => {
   const { topic, sort_by, order } = req.query;
-  console.log(order);
   if (topic) {
     fetchTopics()
       .then((results) => {

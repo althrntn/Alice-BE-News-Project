@@ -33,8 +33,21 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
   if (topic) {
     queryString += `WHERE topic = '${topic}'`;
   }
-
-  queryString += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+  const permittedSorts = [
+    "title",
+    "body",
+    "author",
+    "votes",
+    "created_at",
+    "topic",
+    "article_id",
+  ];
+  const permittedOrders = ["asc", "desc"];
+  if (permittedSorts.includes(sort_by) && permittedOrders.includes(order)) {
+    queryString += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+  } else {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
 
   return db.query(queryString).then((results) => {
     const noBodyResults = results.rows.map((result) => {
