@@ -102,5 +102,50 @@
     "description": "removes the specified comment",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/user/:username": {
+    "description": "serves up details of a specific user",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "weegembump",
+        "name": "Bob",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates the vote count for the specified comment and serves up the updated comment",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 2 },
+    "exampleResponse": {
+      "comment": {
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the comment..",
+        "created_at": 1527695953341,
+        "votes": 100,
+        "article_id": 4
+      }
+    }
+  },
+  "POST /api/articles": {
+    "description": "adds a new article and serves up a full copy of the article",
+    "queries": [],
+    "exampleRequest": {
+      "author": "Brian",
+      "title": "amazing article",
+      "body": "read on for the rest...",
+      "topic": "top articles"
+    },
+    "exampleResponse": {
+      "author": "Brian",
+      "title": "amazing article",
+      "body": "read on for the rest...",
+      "topic": "top articles",
+      "votes": 0,
+      "comment_count": 0,
+      "created_at": 1527695953341
+    }
   }
 }
