@@ -465,3 +465,77 @@ describe("GET /api/users/username", () => {
       });
   });
 });
+describe("PATCH api/comments/:comment_id", () => {
+  test("200: responds with a comment object with updated vote count when vote is increased", () => {
+    const newVote = 1;
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: newVote })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id", 1);
+        expect(body.comment).toHaveProperty("votes", 17);
+        expect(body.comment).toHaveProperty(
+          "body",
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        );
+        expect(body.comment).toHaveProperty("author", "butter_bridge");
+        expect(body.comment).toHaveProperty("article_id", 9);
+        expect(body.comment).toHaveProperty("created_at");
+      });
+  });
+  test("200: responds with a comment object with updated vote count when vote is decreased", () => {
+    const newVote = -1;
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: newVote })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id", 1);
+        expect(body.comment).toHaveProperty("votes", 15);
+        expect(body.comment).toHaveProperty(
+          "body",
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        );
+        expect(body.comment).toHaveProperty("author", "butter_bridge");
+        expect(body.comment).toHaveProperty("article_id", 9);
+        expect(body.comment).toHaveProperty("created_at");
+      });
+  });
+  test("400: responds with a bad request message when passed an invalid comment id e.g. string ", () => {
+    return request(app)
+      .patch("/api/comments/blah")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: responds with a bad request message when passed an invalid vote object e.g. empty object ", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: responds with a bad request message when passed an invalid vote e.g. string ", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "wooo" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("404: responds with a not found message when passed an out of range comment id ", () => {
+    return request(app)
+      .patch("/api/comments/3000")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment not found");
+      });
+  });
+});
