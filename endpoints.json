@@ -80,5 +80,24 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a new comment to an article and serves up the new comment",
+    "body": { "username": "Barney", "body": "I'm a big, purple dinosaur" },
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "body": "Comment text here",
+        "author": "weegembump",
+        "created_at": 1527695953341,
+        "votes": 0,
+        "article_id": 5
+      }
+    }
+  },
+  "DELETE /api/comment/:comment_id": {
+    "description": "removes the specified comment",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
