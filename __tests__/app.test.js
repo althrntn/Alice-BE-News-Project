@@ -417,18 +417,19 @@ describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes the specified comment from the data and does not return any content", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
-});
-test("404: invalid comment_id returns not found message", () => {
-  return request(app)
-    .delete("/api/comments/1000")
-    .expect(404)
-    .then(({ body }) => expect(body.msg).toBe("comment not found"));
-});
-test("400: bad request message sent for invalid comment_id e.g. string", () => {
-  return request(app)
-    .delete("/api/comments/blah")
-    .expect(400)
-    .then(({ body }) => expect(body.msg).toBe("bad request"));
+
+  test("404: invalid comment_id returns not found message", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => expect(body.msg).toBe("comment not found"));
+  });
+  test("400: bad request message sent for invalid comment_id e.g. string", () => {
+    return request(app)
+      .delete("/api/comments/blah")
+      .expect(400)
+      .then(({ body }) => expect(body.msg).toBe("bad request"));
+  });
 });
 describe("GET /api", () => {
   test("200: responds with the endpoints JSON explaining the functioning of the API", () => {
@@ -437,6 +438,30 @@ describe("GET /api", () => {
       .expect(200)
       .then(({ body }) => {
         expect(typeof body).toBe("object");
+      });
+  });
+});
+describe("GET /api/users/username", () => {
+  test("200: returns a user object for the correct user", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+        expect(body.user).toHaveProperty("username", "butter_bridge");
+        expect(body.user).toHaveProperty(
+          "avatar_url",
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        );
+        expect(body.user).toHaveProperty("name", "jonny");
+      });
+  });
+  test("404: returns a not found message when a non-existent user is searched for", () => {
+    return request(app)
+      .get("/api/users/bernard")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("user not found");
       });
   });
 });

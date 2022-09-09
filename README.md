@@ -1,6 +1,6 @@
 # Northcoders News API
 
-A hosted version of the API can be found here: https://alice-nc-news.herokuapp.com/
+A hosted version of the API can be found here: https://alice-nc-news.herokuapp.com/api
 
 This project is a RESTful API for accessing news articles and associated comments. Various HTTP requests can be performed to endpoints for articles, comments and users.
 
