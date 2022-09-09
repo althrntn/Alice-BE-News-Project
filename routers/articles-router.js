@@ -10,9 +10,15 @@ const {
 const articlesRouter = express.Router();
 
 articlesRouter.get("/", getArticles);
-articlesRouter.get("/:article_id", getArticleById);
-articlesRouter.patch("/:article_id", patchArticleVotes);
-articlesRouter.get("/:article_id/comments", getCommentsForArticle);
-articlesRouter.post(":article_id/comments", PostNewComment);
+
+articlesRouter
+  .route("/:article_id")
+  .get(getArticleById)
+  .patch(patchArticleVotes);
+
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getCommentsForArticle)
+  .post(PostNewComment);
 
 module.exports = articlesRouter;
