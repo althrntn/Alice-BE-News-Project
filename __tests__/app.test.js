@@ -430,3 +430,13 @@ test("400: bad request message sent for invalid comment_id e.g. string", () => {
     .expect(400)
     .then(({ body }) => expect(body.msg).toBe("bad request"));
 });
+describe("GET /api", () => {
+  test("200: responds with the endpoints JSON explaining the functioning of the API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+      });
+  });
+});
