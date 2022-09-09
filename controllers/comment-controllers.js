@@ -8,9 +8,9 @@ exports.deleteComment = (req, res, next) => {
         deletedComment &&
         deletedComment.comment_id === parseInt(comment_id)
       ) {
-        res.status(204).send(null);
+        res.sendStatus(204);
       } else {
-        res.status(404).send({ msg: "comment not found" });
+        return Promise.reject({ status: 404, msg: "comment not found" });
       }
     })
     .catch(next);
