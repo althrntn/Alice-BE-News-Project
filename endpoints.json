@@ -54,7 +54,7 @@
   "PATCH /api/articles/:article_id": {
     "description": "updates the vote count for the specified article and serves up the updated article",
     "queries": [],
-    "body?": { "inc_votes": 2 },
+    "exampleRequest": { "inc_votes": 2 },
     "exampleResponse": {
       "article": {
         "title": "Seafood substitutions are increasing",
@@ -83,7 +83,10 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "adds a new comment to an article and serves up the new comment",
-    "body": { "username": "Barney", "body": "I'm a big, purple dinosaur" },
+    "exampleRequest": {
+      "username": "Barney",
+      "body": "I'm a big, purple dinosaur"
+    },
     "queries": [],
     "exampleResponse": {
       "comment": {

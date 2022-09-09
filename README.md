@@ -1,6 +1,6 @@
 # Northcoders News API
 
-https://alice-nc-news.herokuapp.com/
+A hosted version of the API can be found here: https://alice-nc-news.herokuapp.com/
 
 This project is a RESTful API for accessing news articles and associated comments. Various HTTP requests can be performed to endpoints for articles, comments and users.
 
@@ -8,11 +8,13 @@ This project is a RESTful API for accessing news articles and associated comment
 
 This project can be forked and cloned from GitHub here: https://github.com/althrntn/Alice-BE-News-Project/tree/main
 
-Once cloned, several dependencies are needed to run the project: please install dotenv, express and postgres (pg). For testing purposes, jest, jest-sorted, jest-extended and supertest are also required.
+Once cloned, several dependencies are needed to run the project: please install dotenv, express and postgres (pg). For testing purposes, jest, jest-sorted, jest-extended and supertest are also required. These packages are included in the package.json so can be installed by running 'npm install'.
 
-The API connects to two local databases - the development database and the testing database. Details of these can be found in the setup.sql file. The run-seed.js file in the db/seeds directory is set up to seed the development database when run.
+The API connects to two local databases - the development database and the testing database. Details of these can be found in the setup.sql file. Run this file with 'npm run setup-dbs' to create the databases. The run-seed.js file in the db/seeds directory can then be used to seed the development database when run.
 
-The API has been set up with a full testing suite found in the **tests** directory. These tests can be run using the 'test' script with 'npm run'. There is no need to seed the databases before running tests as the app.test.js file will re-seed the test databse prior to each test and close the database connection once testing is complete.
+The API has been set up with a full testing suite found in the **tests** directory. These tests can be run using 'npm test'. There is no need to seed the databases before running tests as the app.test.js file will re-seed the test databse prior to each test and close the database connection once testing is complete.
+
+To run the API locally, use the 'npm start' script. The server will default to listening on port 9090.
 
 # Database connection setup
 
