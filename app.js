@@ -13,6 +13,7 @@ const { getUsers } = require("./controllers/user-controllers");
 const app = express();
 app.use(express.json());
 
+app.use("/api", express.static("endpoints.json"));
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
