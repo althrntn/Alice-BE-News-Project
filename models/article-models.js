@@ -78,3 +78,18 @@ exports.createNewComment = (article_id, newComment) => {
       return results.rows[0];
     });
 };
+exports.createNewArticle = (newArticle) => {
+  if (Object.keys(newArticle).length === 4) {
+    const { author, title, body, topic } = newArticle;
+    return db
+      .query(
+        "INSERT INTO articles (author, title, body, topic) VALUES ($1, $2, $3, $4) RETURNING *",
+        [author, title, body, topic]
+      )
+      .then((results) => {
+        return results.rows[0].article_id;
+      });
+  } else {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+};

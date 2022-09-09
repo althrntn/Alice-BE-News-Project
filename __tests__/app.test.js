@@ -539,3 +539,90 @@ describe("PATCH api/comments/:comment_id", () => {
       });
   });
 });
+describe("POST /api/articles", () => {
+  test("201: accepts an article object and returns it with full properties", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "the best article yet",
+      body: "this is the  greatest thing you have ever read.",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+        expect(body.article).toHaveProperty("author", "butter_bridge");
+        expect(body.article).toHaveProperty("title", "the best article yet");
+        expect(body.article).toHaveProperty(
+          "body",
+          "this is the  greatest thing you have ever read."
+        );
+        expect(body.article).toHaveProperty("topic", "cats");
+        expect(body.article).toHaveProperty("votes", 0);
+        expect(body.article).toHaveProperty("article_id", 13);
+        expect(body.article).toHaveProperty("created_at");
+        expect(body.article).toHaveProperty("comment_count", "0");
+      });
+  });
+  test("400: returns a bad request error when passed an incomplete object", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "the best article yet",
+      body: "this is the  greatest thing you have ever read.",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: returns a bad request error when passed an object with incorrect keys", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "the best article yet",
+      body: "this is the  greatest thing you have ever read.",
+      hello: "what am I doing here?",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("404: returns a username not found message when passed an object with username not in users table", () => {
+    const newArticle = {
+      author: "mystery",
+      title: "the best article yet",
+      body: "this is the  greatest thing you have ever read.",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("user not found");
+      });
+  });
+  test("404: returns a topic not found message when passed an object with username not in users table", () => {
+    const newArticle = {
+      author: "mystery",
+      title: "the best article yet",
+      body: "this is the  greatest thing you have ever read.",
+      topic: "booooo",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("topic not found");
+      });
+  });
+});
