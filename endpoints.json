@@ -10,8 +10,8 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles, with optional queries",
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -20,6 +20,63 @@
           "author": "weegembump",
           "body": "Text from the article..",
           "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article selected using its article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 0
+      }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates the vote count for the specified article and serves up the updated article",
+    "queries": [],
+    "body?": { "inc_votes": 2 },
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 2
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves up an array of all comments associated with the article",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": "Comment text here",
+          "author": "weegembump",
+          "created_at": 1527695953341,
+          "votes": 2,
+          "article_id": 5
         }
       ]
     }

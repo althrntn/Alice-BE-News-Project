@@ -6,6 +6,7 @@ const {
   getCommentsForArticle,
   PostNewComment,
 } = require("./controllers/article-controllers");
+const { deleteComment } = require("./controllers/comment-controllers");
 const { getTopics } = require("./controllers/topic-controller");
 const { getUsers } = require("./controllers/user-controllers");
 
@@ -19,6 +20,7 @@ app.patch("/api/articles/:article_id", patchArticleVotes);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsForArticle);
 app.post("/api/articles/:article_id/comments", PostNewComment);
+app.delete("/api/comments/:comment_id", deleteComment);
 app.get("*", function (req, res) {
   res.status(404).send({ msg: "path not found" });
 });
