@@ -610,7 +610,7 @@ describe("POST /api/articles", () => {
         expect(body.msg).toBe("user not found");
       });
   });
-  test("404: returns a topic not found message when passed an object with username not in users table", () => {
+  test("404: returns a topic not found message when passed an object with topic not in topic table", () => {
     const newArticle = {
       author: "mystery",
       title: "the best article yet",
