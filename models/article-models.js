@@ -41,6 +41,7 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
     "created_at",
     "topic",
     "article_id",
+    "comment_count",
   ];
   const permittedOrders = ["asc", "desc"];
   if (permittedSorts.includes(sort_by) && permittedOrders.includes(order)) {
